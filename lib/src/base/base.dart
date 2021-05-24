@@ -91,10 +91,19 @@ class _BaseView extends State<BaseView> {
   }
 
   void dispose() {
-    provinceController.dispose();
-    cityController.dispose();
-    areaController.dispose();
-    villageController.dispose();// 增加第4级(村/镇)选择
+    ShowType showType = widget.showType;
+    if (showType.contain(ShowType.p)) {
+      provinceController.dispose();
+    }
+    if (showType.contain(ShowType.c)) {
+      cityController.dispose();
+    }
+    if (showType.contain(ShowType.a)) {
+      areaController.dispose();
+    }
+    if (showType.contain(ShowType.v)) {
+      villageController.dispose();
+    }
     if (_changeTimer != null && _changeTimer.isActive) {
       _changeTimer.cancel();
     }
@@ -103,22 +112,27 @@ class _BaseView extends State<BaseView> {
 
   // 初始化controller, 为了使给定的默认值, 在选框的中心位置
   void _initController() {
-    provinceController = new FixedExtentScrollController(
-        initialItem:
-            provinces.indexWhere((Point p) => p.code == targetProvince.code));
-
-    cityController = new FixedExtentScrollController(
-        initialItem: targetProvince.child
-            .indexWhere((Point p) => p.code == targetCity.code));
-
-    areaController = new FixedExtentScrollController(
-        initialItem: targetCity.child
-            .indexWhere((Point p) => p.code == targetArea.code));
-
-    // 增加第4级(村/镇)选择
-    villageController = new FixedExtentScrollController(
-        initialItem: targetArea.child
-            .indexWhere((Point p) => p.code == targetVillage.code));
+    ShowType showType = widget.showType;
+    if (showType.contain(ShowType.p)) {
+      provinceController = new FixedExtentScrollController(
+          initialItem:
+          provinces.indexWhere((Point p) => p.code == targetProvince.code));
+    }
+    if (showType.contain(ShowType.c)) {
+      cityController = new FixedExtentScrollController(
+          initialItem: targetProvince.child
+              .indexWhere((Point p) => p.code == targetCity.code));
+    }
+    if (showType.contain(ShowType.a)) {
+      areaController = new FixedExtentScrollController(
+          initialItem: targetCity.child
+              .indexWhere((Point p) => p.code == targetArea.code));
+    }
+    if (showType.contain(ShowType.v)) {
+      villageController = new FixedExtentScrollController(
+          initialItem: targetArea.child
+              .indexWhere((Point p) => p.code == targetVillage.code));
+    }
   }
 
   // 重置Controller的原因在于, 无法手动去更改initialItem, 也无法通过
